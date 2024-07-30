@@ -62,7 +62,46 @@ describe('Blog app', () => {
       await expect(page.getByText('test post - test author')).toBeVisible()
 
     })
-  })
 
+    test('can succesfully like a post', async ({ page }) => {
+
+      await page.getByRole('button', { name: 'New Note' }).click()
+
+      await page.getByTestId('author').fill('test author')
+      await page.getByTestId('title').fill('test post')
+      await page.getByTestId('url').fill('test url')
+
+      await page.getByRole('button', { name: 'Submit' }).click()
+
+      await page.getByRole('button', { name: 'View' }).click()
+      await page.getByRole('button', { name: 'like' }).click()
+
+      await expect(page.getByText('1')).toBeVisible()
+
+    })
+
+    test('can delete their blog', async ({ page }) => {
+
+      await page.getByRole('button', { name: 'New Note' }).click()
+
+      await page.getByTestId('author').fill('test author')
+      await page.getByTestId('title').fill('test post')
+      await page.getByTestId('url').fill('test url')
+
+      await page.getByRole('button', { name: 'Submit' }).click()
+
+      await page.getByRole('button', { name: 'View' }).click()
+
+      page.on('dialog', async dialog => {
+        expect(dialog.message()).toEqual('Remove test post by test author?')
+        await dialog.accept()
+      })
+
+      await page.getByRole('button', { name: 'Remove' }).click()
+
+
+      await expect(page.getByText('test post - test author')).not.toBeVisible()
+    })
+  })
 })
 

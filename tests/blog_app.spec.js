@@ -35,11 +35,33 @@ describe('Blog app', () => {
 
       await page.getByRole('button', { name: 'Login' }).click()
 
-      const errorDiv = await page.locator('.error')
+      const errorDiv = page.locator('.error')
       await expect(errorDiv).toContainText('Wrong credentials')
 
     })
+  })
 
+  describe('logged in users', () => {
+    beforeEach(async ({ page }) => {
+
+      await page.getByTestId('username').fill('vincent@gmail.com')
+      await page.getByTestId('password').fill('12345678')
+      await page.getByRole('button', { name: 'Login' }).click()
+    })
+
+    test('can succesfully create a post', async ({ page }) => {
+
+      await page.getByRole('button', { name: 'New Note' }).click()
+
+      await page.getByTestId('author').fill('test author')
+      await page.getByTestId('title').fill('test post')
+      await page.getByTestId('url').fill('test url')
+
+      await page.getByRole('button', { name: 'Submit' }).click()
+
+      await expect(page.getByText('test post - test author')).toBeVisible()
+
+    })
   })
 
 })

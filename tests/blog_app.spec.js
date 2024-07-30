@@ -21,19 +21,19 @@ describe('Blog app', () => {
 
   describe('Login', () => {
     test('succeeds with valid credentials', async ({ page }) => {
-      await page.getByRole('textbox').first().fill('vincent@gmail.com')
-      await page.getByRole('textbox').last().fill('12345678')
+      await page.getByTestId('username').fill('vincent@gmail.com')
+      await page.getByTestId('password').fill('12345678')
 
-      await page.getByText('Login').click()
 
+      await page.getByRole('button', { name: 'Login' }).click()
       await expect(page.getByText('Blogs')).toBeVisible()
     })
 
     test('fails with invalid credentials', async ({ page }) => {
-      await page.getByRole('textbox').first().fill('vincent@gmail.com')
-      await page.getByRole('textbox').last().fill('1222')
+      await page.getByTestId('username').fill('vincent@gmail.com')
+      await page.getByTestId('password').fill('123')
 
-      await page.getByText('Login').click()
+      await page.getByRole('button', { name: 'Login' }).click()
 
       const errorDiv = await page.locator('.error')
       await expect(errorDiv).toContainText('Wrong credentials')
